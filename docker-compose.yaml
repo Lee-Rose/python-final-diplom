@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  postgres:
+    container_name: nyan_postgres
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "6432:5432"
+    volumes:
+      - postgres_data:/data/postgres
+    environment:
+      POSTGRES_USER: nyan_user
+      POSTGRES_PASSWORD: nyan_password
+      POSTGRES_DB: nyan_db
+      PGDATA: $HOME/.docker-volumes/postgres
+
+  redis:
+    container_name: nyan_redis
+    image: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
