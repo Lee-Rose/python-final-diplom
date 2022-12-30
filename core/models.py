@@ -120,7 +120,7 @@ class Order(TimeStampModel):
 
     user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
     status = models.CharField(max_length=50, choices=StatusChoices.choices, default=StatusChoices.NOT_DELIVERED)
-    number = models.IntegerField(max_length=10)
+    number = models.IntegerField()
     delivered_at = models.DateTimeField(blank=True, null=True)
 
 

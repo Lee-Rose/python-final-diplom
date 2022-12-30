@@ -25,6 +25,23 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ['name']
 
 
+# @register(Product)
+# class ProductAdmin(admin.ModelAdmin):
+#     list_display = ['id', 'name', 'model', 'price_rrc']
+#     list_display_links = ['id', 'name', 'model']
+#     list_filter = ['categories']
+#     search_fields = ['name', 'model']
+#     ordering = ['name', 'price_rrc']
+#
+#     autocomplete_fields = ['categories']
+#     # raw_fields = ['categories']
+
+
+class ProductParameterTabularInline(admin.TabularInline):
+    model = ProductParameter
+    extra = 0
+
+
 @register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'model', 'price_rrc']
@@ -34,5 +51,7 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ['name', 'price_rrc']
 
     autocomplete_fields = ['categories']
-    # raw_fields = ['categories']
 
+    inlines = [
+        ProductParameterTabularInline,
+    ]
