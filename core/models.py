@@ -124,7 +124,7 @@ class Order(TimeStampModel):
     delivered_at = models.DateTimeField(blank=True, null=True)
 
 
-class OrderItem(models.Model):
+class ItemInOrder(models.Model):
     """
     Quantity of the product in the order.
     """
@@ -137,3 +137,30 @@ class OrderItem(models.Model):
             models.UniqueConstraint(fields=['product_info', 'order'], name='unique_order_product_info'),
             models.CheckConstraint(check=models.Q(quantity__gt=1), name='check_quantity'),
         ]
+
+
+class ShoppingBasket(models.Model):
+    """
+    Tool for linking a shopping basket to a specific user
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='shopping_basket')
+
+class ItemInShoppingBasket(models.Model):
+    """
+    The position of the product in the basket includes information
+    about the product, the supplier and the quantity of this product in the basket.
+    """
+    shopping_basket = models.ForeignKey(ShoppingBasket, on_delete=models.CASCADE, related_name='items')
+    product_info = models.ForeignKey(ProductInfo, on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['shopping_basket', 'product_info'],
+                                    name='item_in_shopping_basket_unique_product_info_basket'),
+            models.CheckConstraint(check=models.Q(quantity__gte=1), name='item_in_shopping_basket_check_quantity'),
+        ]
+
+    @property
+    def total_price(self):
+        return self.product_info.price * self.quantity

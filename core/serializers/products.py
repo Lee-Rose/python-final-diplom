@@ -10,7 +10,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-
     categories = serializers.SerializerMethodField()
     class Meta:
         model = Product

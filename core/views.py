@@ -1,11 +1,11 @@
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.decorators import api_view
 from rest_framework import views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from core.models import Product
-from core.serializers import ProductSerializer
+from core.models import Product, ShoppingBasket
+from core.serializers.products import ProductSerializer
+from core.serializers.shopping_basket import BasketSerializer
 
 
 class ProductsView(views.APIView):
@@ -17,6 +17,10 @@ class ProductsView(views.APIView):
         return Response(serializer.data)
 
 
-
-
-
+class BasketView(views.APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = BasketSerializer
+    def get(self, request, *args, **kwargs):
+        shopping_basket = ShoppingBasket.objects.prefetch_related('items__product_info', 'items__shop').get(user=request.user)
+        serializer = BasketSerializer(shopping_basket)
+        return Response(serializer.data)
